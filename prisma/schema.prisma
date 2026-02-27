@@ -1,0 +1,154 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+// ─── NextAuth Models ────────────────────────────────────────────
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String? @db.Text
+  access_token      String? @db.Text
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String? @db.Text
+  session_state     String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
+}
+
+// ─── User ───────────────────────────────────────────────────────
+model User {
+  id            String    @id @default(cuid())
+  name          String?
+  email         String?   @unique
+  emailVerified DateTime?
+  image         String?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  accounts  Account[]
+  sessions  Session[]
+  panels    Panel[]
+  layouts   DashboardLayout[]
+  feeds     UserFeed[]
+  locations WeatherLocation[]
+}
+
+// ─── Dashboard & Panels ─────────────────────────────────────────
+model Panel {
+  id        String   @id @default(cuid())
+  userId    String
+  type      String   // "weather" | "news" | "rss" | "calendar" | "notes" | "stocks" | "search"
+  title     String
+  config    Json     @default("{}")
+  position  Json     @default("{}")  // { x, y, w, h }
+  visible   Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+}
+
+model DashboardLayout {
+  id        String   @id @default(cuid())
+  userId    String
+  name      String   @default("default")
+  layout    Json     // Full react-grid-layout serialized layout
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, name])
+}
+
+// ─── News / RSS ─────────────────────────────────────────────────
+model FeedSource {
+  id          String   @id @default(cuid())
+  name        String
+  url         String   @unique
+  category    String   @default("general") // "general" | "tech" | "world" | "science"
+  description String?
+  iconUrl     String?
+  isDefault   Boolean  @default(false)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  userFeeds  UserFeed[]
+  articles   Article[]
+}
+
+model UserFeed {
+  id           String   @id @default(cuid())
+  userId       String
+  feedSourceId String
+  enabled      Boolean  @default(true)
+  createdAt    DateTime @default(now())
+
+  user       User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  feedSource FeedSource @relation(fields: [feedSourceId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, feedSourceId])
+}
+
+model Article {
+  id           String   @id @default(cuid())
+  feedSourceId String
+  title        String
+  link         String
+  description  String?  @db.Text
+  author       String?
+  publishedAt  DateTime?
+  imageUrl     String?
+  guid         String?
+  createdAt    DateTime @default(now())
+
+  feedSource FeedSource @relation(fields: [feedSourceId], references: [id], onDelete: Cascade)
+
+  @@unique([feedSourceId, guid])
+  @@index([feedSourceId, publishedAt])
+}
+
+// ─── Weather ────────────────────────────────────────────────────
+model WeatherLocation {
+  id        String   @id @default(cuid())
+  userId    String
+  name      String
+  lat       Float
+  lon       Float
+  isDefault Boolean  @default(false)
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, lat, lon])
+}
