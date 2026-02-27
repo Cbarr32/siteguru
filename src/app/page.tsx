@@ -8,6 +8,9 @@ import { GmailPanel } from "@/components/panels/GmailPanel";
 import { GitHubPanel } from "@/components/panels/GitHubPanel";
 import { SpotifyPanel } from "@/components/panels/SpotifyPanel";
 import { YouTubePanel } from "@/components/panels/YouTubePanel";
+import { CalendarPanel } from "@/components/panels/CalendarPanel";
+import { TeamsPanel } from "@/components/panels/TeamsPanel";
+import { MeetPanel } from "@/components/panels/MeetPanel";
 
 const defaultPanels: DashboardPanel[] = [
   {
@@ -75,6 +78,39 @@ const defaultPanels: DashboardPanel[] = [
     component: (
       <YouTubePanel
         id="youtube-1"
+      />
+    ),
+  },
+  {
+    id: "calendar-1",
+    type: "calendar",
+    title: "Calendar",
+    defaultLayout: { x: 0, y: 19, w: 6, h: 6, minW: 4, minH: 5 },
+    component: (
+      <CalendarPanel
+        id="calendar-1"
+      />
+    ),
+  },
+  {
+    id: "teams-1",
+    type: "teams",
+    title: "Teams",
+    defaultLayout: { x: 6, y: 19, w: 6, h: 6, minW: 4, minH: 5 },
+    component: (
+      <TeamsPanel
+        id="teams-1"
+      />
+    ),
+  },
+  {
+    id: "meet-1",
+    type: "meet",
+    title: "Meet",
+    defaultLayout: { x: 0, y: 25, w: 6, h: 6, minW: 4, minH: 5 },
+    component: (
+      <MeetPanel
+        id="meet-1"
       />
     ),
   },

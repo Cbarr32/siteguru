@@ -2,6 +2,7 @@ import NextAuth from "next-auth";
 import Google from "next-auth/providers/google";
 import GitHub from "next-auth/providers/github";
 import Spotify from "next-auth/providers/spotify";
+import MicrosoftEntraId from "next-auth/providers/microsoft-entra-id";
 import { PrismaAdapter } from "@auth/prisma-adapter";
 import { prisma } from "@/lib/db";
 
@@ -21,6 +22,8 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
             "https://www.googleapis.com/auth/gmail.send",
             "https://www.googleapis.com/auth/gmail.modify",
             "https://www.googleapis.com/auth/youtube.readonly",
+            "https://www.googleapis.com/auth/calendar.readonly",
+            "https://www.googleapis.com/auth/calendar.events",
           ].join(" "),
           access_type: "offline",
           prompt: "consent",
@@ -50,6 +53,25 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
             "user-library-read",
             "user-top-read",
             "user-read-recently-played",
+          ].join(" "),
+        },
+      },
+    }),
+    MicrosoftEntraId({
+      clientId: process.env.MICROSOFT_ENTRA_ID_CLIENT_ID!,
+      clientSecret: process.env.MICROSOFT_ENTRA_ID_CLIENT_SECRET!,
+      authorization: {
+        params: {
+          scope: [
+            "openid",
+            "email",
+            "profile",
+            "Chat.Read",
+            "Chat.ReadWrite",
+            "ChannelMessage.Read.All",
+            "Presence.Read",
+            "OnlineMeetings.ReadWrite",
+            "User.Read",
           ].join(" "),
         },
       },
@@ -102,6 +124,19 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
           (session as SessionWithAccessToken).spotifyToken =
             spotifyAccount.access_token;
         }
+
+        // Get the Microsoft account for this user (Teams)
+        const microsoftAccount = await prisma.account.findFirst({
+          where: {
+            userId: user.id,
+            provider: "microsoft-entra-id",
+          },
+        });
+
+        if (microsoftAccount?.access_token) {
+          (session as SessionWithAccessToken).teamsToken =
+            microsoftAccount.access_token;
+        }
       }
       return session;
     },
@@ -113,6 +148,7 @@ export interface SessionWithAccessToken {
   accessToken?: string;
   githubToken?: string;
   spotifyToken?: string;
+  teamsToken?: string;
   user: {
     id: string;
     name?: string | null;
