@@ -324,6 +324,7 @@ function NowPlayingView({
           min={0}
           max={100}
           value={localVolume}
+          aria-label="Volume"
           onChange={(e) => {
             const v = Number(e.target.value);
             setLocalVolume(v);
@@ -466,6 +467,7 @@ function PlaylistsView() {
               href={`https://open.spotify.com/playlist/${pl.id}`}
               target="_blank"
               rel="noopener noreferrer"
+              title={`Open ${pl.name} on Spotify`}
               className="opacity-0 group-hover:opacity-100"
             >
               <ExternalLink className="h-3.5 w-3.5 text-muted-foreground" />

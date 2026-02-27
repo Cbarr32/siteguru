@@ -152,6 +152,7 @@ export function NewsPanel({
                         href={article.link}
                         target="_blank"
                         rel="noopener noreferrer"
+                        title={article.title}
                         className="text-sm font-medium leading-snug hover:underline line-clamp-2"
                       >
                         {article.title}
@@ -187,6 +188,7 @@ export function NewsPanel({
                         href={article.link}
                         target="_blank"
                         rel="noopener noreferrer"
+                        title={`Open ${article.title} in new tab`}
                         className="opacity-0 group-hover:opacity-100 transition-opacity"
                       >
                         <ExternalLink className="h-3.5 w-3.5 text-muted-foreground hover:text-foreground" />
