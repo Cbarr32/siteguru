@@ -4,6 +4,10 @@ import { Sidebar } from "@/components/layout/Sidebar";
 import { DashboardGrid, DashboardPanel } from "@/components/layout/DashboardGrid";
 import { WeatherPanel } from "@/components/panels/WeatherPanel";
 import { NewsPanel } from "@/components/panels/NewsPanel";
+import { GmailPanel } from "@/components/panels/GmailPanel";
+import { GitHubPanel } from "@/components/panels/GitHubPanel";
+import { SpotifyPanel } from "@/components/panels/SpotifyPanel";
+import { YouTubePanel } from "@/components/panels/YouTubePanel";
 
 const defaultPanels: DashboardPanel[] = [
   {
@@ -27,6 +31,50 @@ const defaultPanels: DashboardPanel[] = [
       <NewsPanel
         id="news-1"
         defaultCategory="all"
+      />
+    ),
+  },
+  {
+    id: "gmail-1",
+    type: "gmail",
+    title: "Gmail",
+    defaultLayout: { x: 0, y: 5, w: 6, h: 6, minW: 4, minH: 5 },
+    component: (
+      <GmailPanel
+        id="gmail-1"
+      />
+    ),
+  },
+  {
+    id: "github-1",
+    type: "github",
+    title: "GitHub",
+    defaultLayout: { x: 6, y: 5, w: 6, h: 6, minW: 4, minH: 5 },
+    component: (
+      <GitHubPanel
+        id="github-1"
+      />
+    ),
+  },
+  {
+    id: "spotify-1",
+    type: "spotify",
+    title: "Spotify",
+    defaultLayout: { x: 0, y: 11, w: 6, h: 6, minW: 4, minH: 5 },
+    component: (
+      <SpotifyPanel
+        id="spotify-1"
+      />
+    ),
+  },
+  {
+    id: "youtube-1",
+    type: "youtube",
+    title: "YouTube",
+    defaultLayout: { x: 6, y: 11, w: 6, h: 8, minW: 4, minH: 6 },
+    component: (
+      <YouTubePanel
+        id="youtube-1"
       />
     ),
   },

@@ -51,7 +51,7 @@ export function NewsPanel({
   defaultCategory = "all",
 }: NewsPanelProps) {
   const [articles, setArticles] = useState<NewsArticle[]>([]);
-  const [feeds, setFeeds] = useState<NewsFeed[]>([]);
+  const [, setFeeds] = useState<NewsFeed[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [activeCategory, setActiveCategory] = useState(defaultCategory);
