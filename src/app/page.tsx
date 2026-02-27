@@ -11,6 +11,8 @@ import { YouTubePanel } from "@/components/panels/YouTubePanel";
 import { CalendarPanel } from "@/components/panels/CalendarPanel";
 import { TeamsPanel } from "@/components/panels/TeamsPanel";
 import { MeetPanel } from "@/components/panels/MeetPanel";
+import { InstagramPanel } from "@/components/panels/InstagramPanel";
+import { AppleMusicPanel } from "@/components/panels/AppleMusicPanel";
 
 const defaultPanels: DashboardPanel[] = [
   {
@@ -111,6 +113,28 @@ const defaultPanels: DashboardPanel[] = [
     component: (
       <MeetPanel
         id="meet-1"
+      />
+    ),
+  },
+  {
+    id: "instagram-1",
+    type: "instagram",
+    title: "Instagram",
+    defaultLayout: { x: 6, y: 25, w: 6, h: 7, minW: 4, minH: 5 },
+    component: (
+      <InstagramPanel
+        id="instagram-1"
+      />
+    ),
+  },
+  {
+    id: "apple-music-1",
+    type: "apple-music",
+    title: "Apple Music",
+    defaultLayout: { x: 0, y: 32, w: 6, h: 5, minW: 3, minH: 4 },
+    component: (
+      <AppleMusicPanel
+        id="apple-music-1"
       />
     ),
   },

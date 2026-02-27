@@ -3,6 +3,7 @@ import Google from "next-auth/providers/google";
 import GitHub from "next-auth/providers/github";
 import Spotify from "next-auth/providers/spotify";
 import MicrosoftEntraId from "next-auth/providers/microsoft-entra-id";
+import Facebook from "next-auth/providers/facebook";
 import { PrismaAdapter } from "@auth/prisma-adapter";
 import { prisma } from "@/lib/db";
 
@@ -76,6 +77,20 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
         },
       },
     }),
+    Facebook({
+      clientId: process.env.FACEBOOK_CLIENT_ID!,
+      clientSecret: process.env.FACEBOOK_CLIENT_SECRET!,
+      authorization: {
+        params: {
+          scope: [
+            "instagram_basic",
+            "instagram_manage_insights",
+            "pages_show_list",
+            "pages_read_engagement",
+          ].join(","),
+        },
+      },
+    }),
   ],
   session: {
     strategy: "database",
@@ -137,6 +152,19 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
           (session as SessionWithAccessToken).teamsToken =
             microsoftAccount.access_token;
         }
+
+        // Get the Facebook account for this user (Instagram)
+        const facebookAccount = await prisma.account.findFirst({
+          where: {
+            userId: user.id,
+            provider: "facebook",
+          },
+        });
+
+        if (facebookAccount?.access_token) {
+          (session as SessionWithAccessToken).instagramToken =
+            facebookAccount.access_token;
+        }
       }
       return session;
     },
@@ -149,6 +177,7 @@ export interface SessionWithAccessToken {
   githubToken?: string;
   spotifyToken?: string;
   teamsToken?: string;
+  instagramToken?: string;
   user: {
     id: string;
     name?: string | null;
