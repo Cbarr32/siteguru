@@ -2,6 +2,9 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import { cn } from "@/lib/utils";
+import { AgentProvider } from "@/components/agent/AgentContext";
+import { AgentPanel, AgentFAB } from "@/components/agent/AgentPanel";
+import { CommandPaletteProvider } from "@/components/agent/CommandPaletteProvider";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -27,7 +30,12 @@ export default function RootLayout({
           inter.variable
         )}
       >
-        {children}
+        <AgentProvider>
+          {children}
+          <AgentPanel />
+          <AgentFAB />
+          <CommandPaletteProvider />
+        </AgentProvider>
       </body>
     </html>
   );
